@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antikytera · Safari App Technical Briefing</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0f1923;--paper:#f7f4ef;--cream:#ede9e1;--rule:#d4cfc5;--muted:#7a7368;--nav-h:52px;
+  --gemini:#c47d00;--openai:#1f5c3e;--claude:#4a2f8a;--web:#1d4ed8;
+  --safari:#92400e;--content:#4a2f8a;--rec:#1f5c3e;--habit:#075985;--admin:#9f1239;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 24px)}
+body{background:var(--paper);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.65;padding-top:var(--nav-h)}
+
+/* NAV */
+.topnav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:var(--ink);display:flex;align-items:center;padding:0 32px;z-index:100;border-bottom:1px solid #ffffff0d}
+.nav-brand{font-family:'DM Serif Display',serif;font-size:15px;font-weight:400;color:#e8e2d8;letter-spacing:0.02em;text-decoration:none;white-space:nowrap;margin-right:32px;cursor:pointer}
+.nav-brand span{color:#a8a099;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;letter-spacing:0.06em;text-transform:uppercase;margin-left:8px;vertical-align:middle}
+.nav-divider{width:1px;height:20px;background:#ffffff18;margin:0 8px}
+.nav-pages{display:flex;gap:2px;flex:1}
+.nav-page{text-decoration:none;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;color:#a8a099;transition:all 0.15s;white-space:nowrap;cursor:pointer;border:none;background:transparent;font-family:'DM Sans',sans-serif}
+.nav-page:hover{color:#e8e2d8;background:#ffffff0d}
+.nav-page.active{color:#e8e2d8;background:#ffffff14}
+.nav-anchors{display:flex;gap:2px;margin-left:auto}
+.nav-anchor{text-decoration:none;padding:5px 10px;border-radius:6px;font-size:11.5px;color:#6a6560;transition:all 0.15s;white-space:nowrap}
+.nav-anchor:hover{color:#a8a099}
+
+/* PAGE VISIBILITY */
+.page-section{display:none}
+.page-section.active{display:block;animation:fadeIn 0.18s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* SHARED LAYOUT */
+.page-header{padding:48px 60px 40px;border-bottom:1px solid var(--rule);max-width:1040px;margin:0 auto}
+.ph-eyebrow{font-size:11px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.ph-title{font-family:'DM Serif Display',serif;font-size:clamp(28px,4vw,44px);font-weight:400;letter-spacing:-0.02em;line-height:1.1;margin-bottom:16px}
+.ph-title em{font-style:italic;color:#b8b0a4}
+.ph-lead{font-size:15px;font-weight:300;color:#444;line-height:1.75;max-width:660px}
+.page-body{max-width:1040px;margin:0 auto;padding:0 60px 80px}
+.section{padding:52px 0 0}
+.sec-label{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.sec-num{font-family:'DM Serif Display',serif;font-size:12px;color:var(--muted)}
+.sec-title{font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;letter-spacing:-0.01em}
+.sec-rule{flex:1;height:1px;background:var(--rule)}
+.sec-intro{font-size:14px;font-weight:300;color:#444;line-height:1.75;max-width:680px;margin-bottom:24px}
+
+/* TABLES */
+.data-table{width:100%;border-collapse:collapse;font-size:13.5px}
+.data-table th{padding:10px 14px;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--ink)}
+.data-table td{padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.5}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:#f2ede6}
+.data-table td:first-child{font-weight:600;font-size:12.5px;color:var(--muted);white-space:nowrap;width:160px}
+.th-g{color:var(--gemini)!important}.th-o{color:var(--openai)!important}.th-c{color:var(--claude)!important}
+.th-web{color:var(--web)!important}
+.good{color:#15803d;font-weight:500}.warn{color:#b45309;font-weight:500}
+
+.cost-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:24px}
+.cost-table:last-child{margin-bottom:0}
+.cost-table th{padding:9px 12px;text-align:right;font-size:10px;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--rule)}
+.cost-table th:first-child,.cost-table th:nth-child(2){text-align:left}
+.cost-table td{padding:9px 12px;text-align:right;border-bottom:1px solid #ede9e1;font-size:13px}
+.cost-table td:first-child,.cost-table td:nth-child(2){text-align:left;font-weight:500}
+.cost-table tr:last-child td{border-bottom:none}
+.cost-table tr:hover td{background:#f7f4ef}
+.sv-g{color:#9a5f00;font-weight:600}.sv-o{color:var(--openai);font-weight:600}.sv-c{color:var(--claude);font-weight:600}
+.tbl-label{font-size:10.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin:20px 0 8px}
+.tbl-label:first-child{margin-top:0}
+
+.provider-block{border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-bottom:16px}
+.provider-block:last-child{margin-bottom:0}
+.pb-head{padding:16px 20px;display:flex;align-items:center;gap:12px;background:var(--ink)}
+.pb-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.pb-name{font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;color:#e8e2d8}
+.pb-note{font-size:11.5px;color:#666;font-weight:300;margin-left:auto;font-style:italic}
+.pb-body{padding:20px 20px}
+.rag-block{margin-top:20px;padding-top:18px;border-top:1px dashed var(--rule)}
+.rag-eyebrow{font-size:10.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--openai);margin-bottom:5px}
+.rag-desc{font-size:12.5px;color:var(--muted);font-style:italic;margin-bottom:12px;line-height:1.55}
+
+/* TOGGLE */
+.cost-hdr{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.view-toggle{display:flex;background:var(--cream);border-radius:8px;padding:3px;border:1px solid var(--rule);gap:2px;flex-shrink:0}
+.view-btn{padding:6px 14px;border-radius:6px;font-size:11.5px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.18s;font-family:'DM Sans',sans-serif}
+.view-btn.active{background:var(--ink);color:#e8e2d8;box-shadow:0 1px 3px #0003}
+.tabbed-view{display:none;border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.provider-tabs{display:flex;background:var(--cream);border-bottom:1px solid var(--rule)}
+.ptab{display:flex;align-items:center;gap:7px;padding:13px 20px;cursor:pointer;font-size:12.5px;font-weight:500;font-family:'DM Sans',sans-serif;border:none;background:transparent;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.15s}
+.ptab-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ptab-g .ptab-dot{background:var(--gemini)}.ptab-o .ptab-dot{background:var(--openai)}.ptab-c .ptab-dot{background:var(--claude)}
+.ptab:hover{color:var(--ink)}.ptab.active{color:var(--ink);font-weight:600}
+.ptab-g.active{border-bottom-color:var(--gemini)}.ptab-o.active{border-bottom-color:var(--openai)}.ptab-c.active{border-bottom-color:var(--claude)}
+.tab-panel{display:none;padding:20px}.tab-panel.active{display:block}
+.tab-note{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:16px;padding:9px 12px;background:var(--cream);border-radius:6px;border-left:2px solid var(--rule)}
+
+/* CARDS */
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{border-radius:10px;padding:22px 20px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.card h3{font-family:'DM Serif Display',serif;font-size:15px;font-weight:400;margin-bottom:8px}
+.card p{font-size:13px;line-height:1.6;color:#555;font-weight:300}
+.card-g{background:#fdf6e8}.card-g::before{background:var(--gemini)}.card-g h3{color:#7a4800}
+.card-o{background:#eaf4ef}.card-o::before{background:var(--openai)}.card-o h3{color:#1a4030}
+.card-c{background:#f0ecf9}.card-c::before{background:var(--claude)}.card-c h3{color:#2e1a60}
+.card-blue{background:#eef2ff}.card-blue::before{background:#2563eb}.card-blue h3{color:#1e3a8a}
+.card-green{background:#f0fdf4}.card-green::before{background:#16a34a}.card-green h3{color:#14532d}
+.card-orange{background:#fff7ed}.card-orange::before{background:#ea580c}.card-orange h3{color:#7c2d12}
+
+/* CALLOUT */
+.callout{background:var(--ink);border-radius:12px;padding:28px 32px;position:relative;overflow:hidden;margin-top:28px}
+.callout::after{content:'';position:absolute;bottom:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,#4a2f8a22,transparent 70%)}
+.callout-eye{font-size:10.5px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#888;margin-bottom:10px}
+.callout-title{font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;color:#e8e2d8;margin-bottom:10px}
+.callout-body{font-size:13.5px;font-weight:300;color:#a8a099;line-height:1.8;max-width:680px}
+
+/* PAGE NAV */
+.page-nav{margin-top:48px;padding:24px 28px;border-radius:12px;border:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;gap:20px;background:var(--cream)}
+.pn-text p:first-child{font-size:10.5px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.pn-text p:nth-child(2){font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;color:var(--ink);margin-bottom:2px}
+.pn-text p:last-child{font-size:12.5px;font-weight:300;color:var(--muted)}
+.pn-btn{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#e8e2d8;text-decoration:none;padding:11px 20px;border-radius:8px;font-size:12.5px;font-weight:500;white-space:nowrap;flex-shrink:0;font-family:'DM Sans',sans-serif;cursor:pointer;border:none}
+.page-nav-row{margin-top:48px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pn-card{padding:22px 24px;border-radius:12px;border:1px solid var(--rule);text-decoration:none;display:block;background:var(--cream);transition:border-color 0.15s;cursor:pointer}
+.pn-card:hover{border-color:var(--ink)}
+.pn-dir{font-size:10.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.pn-title{font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;color:var(--ink);margin-bottom:3px}
+.pn-desc{font-size:12.5px;font-weight:300;color:var(--muted)}
+
+/* PLATFORM */
+.tl-table{width:100%;border-collapse:collapse;font-size:13.5px}
+.tl-table th{padding:10px 14px;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--ink)}
+.tl-table td{padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:middle}
+.tl-table tr:last-child td{border-bottom:none}
+.tl-table td:first-child{font-weight:600;font-size:12.5px;color:var(--muted);width:170px}
+.tl-table tr.total td{font-weight:600;background:var(--cream)}
+.bar-wrap{display:flex;align-items:center;gap:10px}
+.bar{height:7px;border-radius:3px}.bar-web{background:var(--web)}.bar-nat{background:var(--ink)}
+
+/* AI FEATURES */
+.feature-row{display:grid;grid-template-columns:196px 1fr;border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-bottom:12px}
+.feature-row:last-child{margin-bottom:0}
+.fr-label{padding:20px 18px;display:flex;flex-direction:column;gap:5px;border-right:1px solid var(--rule)}
+.fr-icon{font-size:18px;line-height:1;margin-bottom:3px}
+.fr-name{font-family:'DM Serif Display',serif;font-size:15px;font-weight:400;line-height:1.2}
+.fr-loc{font-size:11px;color:var(--muted);font-style:italic;line-height:1.4}
+.fr-body{padding:20px 24px}
+.fr-desc{font-size:13.5px;font-weight:300;color:#333;line-height:1.75;margin-bottom:14px}
+.fr-caps{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.cap{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;font-size:11.5px;font-weight:500;background:var(--cream);color:var(--ink);border:1px solid var(--rule)}
+.cap-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.fr-detail{font-size:12.5px;color:var(--muted);line-height:1.6;font-weight:300;border-top:1px solid var(--rule);padding-top:12px}
+.fr-detail strong{color:var(--ink);font-weight:500}
+.acc-safari .fr-label{background:#fff8f0;border-right-color:#fde68a}.acc-safari .fr-name{color:var(--safari)}.acc-safari .cap-dot{background:var(--safari)}
+.acc-content .fr-label{background:#f5f3ff;border-right-color:#ddd6fe}.acc-content .fr-name{color:var(--content)}.acc-content .cap-dot{background:var(--content)}
+.acc-rec .fr-label{background:#f0fdf4;border-right-color:#bbf7d0}.acc-rec .fr-name{color:var(--rec)}.acc-rec .cap-dot{background:var(--rec)}
+.acc-habit .fr-label{background:#f0f9ff;border-right-color:#bae6fd}.acc-habit .fr-name{color:var(--habit)}.acc-habit .cap-dot{background:var(--habit)}
+.acc-admin .fr-label{background:#fff1f2;border-right-color:#fecdd3}.acc-admin .fr-name{color:var(--admin)}.acc-admin .cap-dot{background:var(--admin)}
+.infra-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.infra-card{background:var(--cream);border-radius:10px;padding:18px;border:1px solid var(--rule)}
+.infra-icon{font-size:16px;margin-bottom:8px}
+.infra-title{font-weight:600;font-size:13.5px;color:var(--ink);margin-bottom:5px}
+.infra-body{font-size:12.5px;font-weight:300;color:#555;line-height:1.6}
+.infra-body code{font-family:monospace;background:#ddd8ce;padding:1px 5px;border-radius:3px;font-size:11px}
+.roadmap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.rm-card{border-radius:10px;padding:18px;border:1px solid var(--rule);background:var(--cream);position:relative;overflow:hidden}
+.rm-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--muted)}
+.rm-tag{font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.rm-title{font-family:'DM Serif Display',serif;font-size:15px;font-weight:400;color:var(--ink);margin-bottom:6px}
+.rm-body{font-size:12.5px;font-weight:300;color:#555;line-height:1.6}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:720px){
+  .topnav{padding:0 16px}
+  .nav-anchors{display:none}
+  .page-header,.page-body{padding-left:20px;padding-right:20px}
+  .card-grid,.infra-grid,.roadmap-grid{grid-template-columns:1fr}
+  .data-table td:first-child{white-space:normal;width:auto}
+  .pb-note{display:none}
+  .feature-row{grid-template-columns:1fr}.fr-label{border-right:none;border-bottom:1px solid var(--rule)}
+  .page-nav-row{grid-template-columns:1fr}
+  .tl-table td:first-child{white-space:normal;width:auto}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="nav-brand" onclick="showPage('comparison');return false;" href="#">Antikytera <span>for Safari App</span></a>
+  <div class="nav-divider"></div>
+  <div class="nav-pages">
+    <button class="nav-page active" id="nav-comparison" onclick="showPage('comparison')">AI Providers</button>
+    <button class="nav-page" id="nav-platform" onclick="showPage('platform')">Platform</button>
+    <button class="nav-page" id="nav-features" onclick="showPage('features')">AI Features</button>
+    <button class="nav-page" id="nav-infra" onclick="showPage('infra')">Infrastructure</button>
+    <button class="nav-page" id="nav-business" onclick="showPage('business')">Business Model</button>
+  </div>
+  <div class="nav-anchors" id="nav-anchors-comparison">
+    <a href="#overview" class="nav-anchor">Overview</a>
+    <a href="#choose" class="nav-anchor">When to Choose</a>
+    <a href="#costs" class="nav-anchor">Cost Analysis</a>
+  </div>
+  <div class="nav-anchors" id="nav-anchors-platform" style="display:none">
+    <a href="#comparison" class="nav-anchor">Comparison</a>
+    <a href="#timeline" class="nav-anchor">Timeline</a>
+    <a href="#recommendation" class="nav-anchor">Recommendation</a>
+  </div>
+  <div class="nav-anchors" id="nav-anchors-features" style="display:none">
+    <a href="#user-features" class="nav-anchor">The Journey</a>
+    <a href="#content-vault" class="nav-anchor">Content Vault</a>
+    <a href="#admin" class="nav-anchor">Admin</a>
+    <a href="#infrastructure" class="nav-anchor">Infrastructure</a>
+    <a href="#roadmap" class="nav-anchor">Planned</a>
+  </div>
+  <div class="nav-anchors" id="nav-anchors-infra" style="display:none">
+    <a href="#infra-overview" class="nav-anchor">Workstreams</a>
+    <a href="#infra-dev" class="nav-anchor">Preview URL</a>
+    <a href="#infra-prod" class="nav-anchor">Production</a>
+  </div>
+  <div class="nav-anchors" id="nav-anchors-business" style="display:none">
+    <a href="#biz-nurses" class="nav-anchor">The Nurse Layer</a>
+    <a href="#biz-tiers" class="nav-anchor">Tier Map</a>
+    <a href="#biz-clinic" class="nav-anchor">Clinic Model</a>
+  </div>
+</nav>
+
+<div class="page-section active" id="page-comparison">
+<div class="page-header">
+  <div class="ph-eyebrow">Antikytera · Technical Briefing for Safari App</div>
+  <h1 class="ph-title">AI Provider<br><em>Comparison</em></h1>
+  <p class="ph-lead">The Safari Guide draws all its answers from the doctor's book and methodology. To make that work at scale without runaway costs, the book needs to be cached. This page explains why, and compares the three providers best suited for the job.</p>
+</div>
+
+<div class="page-body">
+
+<!-- CONTEXT SECTION -->
+<div class="section" id="context">
+  <div class="sec-label">
+    <span class="sec-num">01</span>
+    <h2 class="sec-title">The Context</h2>
+    <span class="sec-rule"></span>
+  </div>
+
+  <!-- WHAT IS A TOKEN -->
+  <div style="border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-bottom:14px">
+    <div style="padding:14px 20px;background:var(--ink);display:flex;align-items:center;gap:10px">
+      <span style="font-family:'DM Serif Display',serif;font-size:16px;font-weight:400;color:#e8e2d8">What is a token?</span>
+    </div>
+    <div style="padding:18px 20px;display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div style="font-size:13.5px;font-weight:300;color:#333;line-height:1.75">
+        When an AI processes text, it does not read words — it reads <strong>tokens</strong>. A token is roughly a word, or sometimes just part of a word. "Fertility" is one token. "I am taking CoQ10" is about five tokens. The doctor's book, at approximately 73,000 words, is around <strong>73,000 tokens</strong>.
+      </div>
+      <div style="font-size:13.5px;font-weight:300;color:#333;line-height:1.75">
+        Every time a user sends a message to the Safari Guide, the AI needs context to answer well. Without caching, that means sending the <strong>entire book</strong> — all 73,000 tokens — alongside every single message. The AI processes it, answers, and discards it. Next message: repeat.
+      </div>
+    </div>
+  </div>
+
+  <!-- WHY CACHING MATTERS -->
+  <div style="border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-bottom:14px">
+    <div style="padding:14px 20px;background:var(--ink);display:flex;align-items:center;gap:10px">
+      <span style="font-family:'DM Serif Display',serif;font-size:16px;font-weight:400;color:#e8e2d8">Why the book must be cached</span>
+    </div>
+    <div style="padding:18px 20px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px">
+        <div>
+          <div style="font-size:10.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#9f1239;margin-bottom:8px">Without caching</div>
+          <div style="font-size:13.5px;font-weight:300;color:#333;line-height:1.75">Every user message sends the full 73,000-token book to the AI. One user asking 10 questions = 730,000 tokens of book content processed. At 1,000 users asking 10 questions a day, that is <strong>730 million tokens per day</strong> — just for the book context, before any actual answers.</div>
+        </div>
+        <div>
+          <div style="font-size:10.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;margin-bottom:8px">With caching</div>
+          <div style="font-size:13.5px;font-weight:300;color:#333;line-height:1.75">The book is loaded into the AI's memory once. Subsequent messages retrieve it at a fraction of the cost — typically <strong>90% cheaper per token</strong>. The user's experience is identical. The cost picture is completely different.</div>
+        </div>
+      </div>
+      <div style="padding:14px 16px;background:var(--cream);border-radius:8px;border-left:3px solid var(--rule);font-size:13px;font-weight:300;color:#3a3530;line-height:1.7">
+        The comparison below evaluates three providers specifically on how they handle this caching — because for Safari App, it is not an optimisation. It is a prerequisite for scalability.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="overview">
+  <div class="sec-label">
+    <span class="sec-num">02</span>
+    <h2 class="sec-title">Provider Overview</h2>
+    <span class="sec-rule"></span>
+  </div>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th class="th-g">Gemini 2.5 Flash</th>
+        <th class="th-o">OpenAI GPT-4.1 Mini</th>
+        <th class="th-c">Claude 4.6 Sonnet</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Payload Strategy</td><td>Explicit / Reference</td><td>Automatic / Full Sync</td><td>Managed / Prefix</td></tr>
+      <tr><td>What you send</td><td>12-character ID (pointer)</td><td>Full 73k tokens</td><td>Full 73k tokens</td></tr>
+      <tr><td>Bandwidth</td><td>Minimal</td><td>Heavy</td><td>Heavy</td></tr>
+      <tr><td>Data Control</td><td>You define what stays cached</td><td>System decides automatically</td><td>You mark cache blocks explicitly</td></tr>
+      <tr><td>Persistence</td><td>Guaranteed until TTL expires</td><td>Volatile (~5–10 min)</td><td>Refreshes on hit (5 min default)</td></tr>
+      <tr><td>Ideal Use Case</td><td>Large persistent contexts</td><td>High-velocity, frequent interactions</td><td>Complex logic with reused data blocks</td></tr>
+      <tr><td>Empathy / Tone</td><td>⭐⭐⭐ Clinical</td><td>⭐⭐⭐⭐ Friendly</td><td>⭐⭐⭐⭐⭐ Warm</td></tr>
+      <tr><td>Accuracy</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td></tr>
+      <tr><td>Context Window</td><td>1M+ tokens</td><td>128k tokens</td><td>200k tokens</td></tr>
+      <tr><td>Reliability</td><td>High</td><td>Very High</td><td>High</td></tr>
+      <tr><td>Cost with Caching</td><td>Very Low</td><td>Moderate</td><td>Higher</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section" id="choose">
+  <div class="sec-label">
+    <span class="sec-num">03</span>
+    <h2 class="sec-title">When to Choose Each Provider</h2>
+    <span class="sec-rule"></span>
+  </div>
+  <div class="card-grid">
+    <div class="card card-g">
+      <h3>Gemini 2.5 Flash</h3>
+      <p>Best when context is large (73k+ tokens). Sending that volume repeatedly creates latency and cost — Gemini's pointer-based caching eliminates both.</p>
+    </div>
+    <div class="card card-o">
+      <h3>OpenAI GPT-4.1 Mini</h3>
+      <p>Best for high-frequency traffic where the cache stays warm automatically. RAG further reduces costs by 93% at scale.</p>
+    </div>
+    <div class="card card-c">
+      <h3>Claude 4.6 Sonnet</h3>
+      <p>Best when tone matters most. Claude consistently delivers the warmest responses — important for an emotionally sensitive wellness journey.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="costs">
+  <div class="cost-hdr">
+    <span class="sec-num">04</span>
+    <h2 class="sec-title">Cost Analysis</h2>
+    <span class="sec-rule"></span>
+    <div class="view-toggle">
+      <button class="view-btn active" id="btn-stacked" onclick="setView('stacked')">☰ All</button>
+      <button class="view-btn" id="btn-tabbed" onclick="setView('tabbed')">⇄ Compare</button>
+    </div>
+  </div>
+
+  <div id="stacked-view">
+    <div class="provider-block">
+      <div class="pb-head"><span class="pb-dot" style="background:var(--gemini)"></span><span class="pb-name">Gemini 2.5 Flash</span><span class="pb-note">$0.30/1M std · $0.03/1M cached · $1.00/1M/hr storage · $2.50/1M output</span></div>
+      <div class="pb-body">
+        <div class="tbl-label">Yearly — 5 questions/user/day</div>
+        <table class="cost-table">
+          <thead><tr><th>Users</th><th>Yearly</th><th>No Caching</th><th>With Caching</th><th>Savings</th></tr></thead>
+          <tbody>
+            <tr><td>100</td><td>5,200</td><td>$57</td><td>$640</td><td class="sv-g">Cache costs more</td></tr>
+            <tr><td>1,000</td><td>52,000</td><td>$570</td><td>$645</td><td class="sv-g">≈ Breakeven</td></tr>
+            <tr><td>10,000</td><td>520,000</td><td>$5,700</td><td>$696</td><td class="sv-g">$5,004 (88%)</td></tr>
+            <tr><td>100,000</td><td>5,200,000</td><td>$57,000</td><td>$1,208</td><td class="sv-g">$55,792 (98%)</td></tr>
+          </tbody>
+        </table>
+        <div class="tbl-label">Daily scenarios</div>
+        <table class="cost-table">
+          <thead><tr><th>Users</th><th>Daily Questions</th><th>No Caching</th><th>With Caching</th><th>Savings</th></tr></thead>
+          <tbody>
+            <tr><td>1,000</td><td>5/day</td><td>$44,480</td><td>$1,180</td><td class="sv-g">$43,300</td></tr>
+            <tr><td>1,000</td><td>10/day</td><td>$88,960</td><td>$1,720</td><td class="sv-g">$87,240</td></tr>
+            <tr><td>10,000</td><td>5/day</td><td>$444,800</td><td>$6,045</td><td class="sv-g">$438,755</td></tr>
+            <tr><td>10,000</td><td>10/day</td><td>$889,600</td><td>$11,450</td><td class="sv-g">$878,150</td></tr>
+            <tr><td>100,000</td><td>5/day</td><td>$4,448,000</td><td>$54,680</td><td class="sv-g">$4,393,320</td></tr>
+            <tr><td>100,000</td><td>10/day</td><td>$8,896,000</td><td>$108,745</td><td class="sv-g">$8,787,255</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="provider-block">
+      <div class="pb-head"><span class="pb-dot" style="background:var(--openai)"></span><span class="pb-name">OpenAI GPT-4.1 Mini</span><span class="pb-note">Caching reduces cost per token, not tokens sent · RAG available separately</span></div>
+      <div class="pb-body">
+        <div class="tbl-label">Yearly — standard caching</div>
+        <table class="cost-table">
+          <thead><tr><th>Users</th><th>Yearly</th><th>No Caching</th><th>With Caching</th><th>Savings</th></tr></thead>
+          <tbody>
+            <tr><td>100</td><td>5,200</td><td>$780</td><td>$405</td><td class="sv-o">$375 (48%)</td></tr>
+            <tr><td>1,000</td><td>52,000</td><td>$7,800</td><td>$4,050</td><td class="sv-o">$3,750 (48%)</td></tr>
+            <tr><td>10,000</td><td>520,000</td><td>$78,000</td><td>$40,500</td><td class="sv-o">$37,500 (48%)</td></tr>
+            <tr><td>100,000</td><td>5,200,000</td><td>$780,000</td><td>$405,000</td><td class="sv-o">$375,000 (48%)</td></tr>
+          </tbody>
+        </table>
+        <div class="tbl-label">Daily — standard caching</div>
+        <table class="cost-table">
+          <thead><tr><th>Users</th><th>Daily Questions</th><th>No Caching</th><th>With Caching</th><th>Savings</th></tr></thead>
+          <tbody>
+            <tr><td>1,000</td><td>5/day</td><td>$273,750</td><td>$142,350</td><td class="sv-o">$131,400</td></tr>
+            <tr><td>1,000</td><td>10/day</td><td>$547,500</td><td>$284,700</td><td class="sv-o">$262,800</td></tr>
+            <tr><td>10,000</td><td>5/day</td><td>$2,737,500</td><td>$1,423,500</td><td class="sv-o">$1,314,000</td></tr>
+            <tr><td>10,000</td><td>10/day</td><td>$5,475,000</td><td>$2,847,000</td><td class="sv-o">$2,628,000</td></tr>
+            <tr><td>100,000</td><td>5/day</td><td>$27,375,000</td><td>$14,235,000</td><td class="sv-o">$13,140,000</td></tr>
+            <tr><td>100,000</td><td>10/day</td><td>$54,750,000</td><td>$28,470,000</td><td class="sv-o">$26,280,000</td></tr>
+          </tbody>
+        </table>
+        <div class="rag-block">
+          <div class="rag-eyebrow">RAG Alternative — Retrieval-Augmented Generation</div>
+          <div class="rag-desc">Retrieves only relevant chunks (~2–5K tokens) instead of the full 73K context. Most cost-effective option at scale.</div>
+          <div class="tbl-label">Yearly — RAG</div>
+          <table class="cost-table">
+            <thead><tr><th>Users</th><th>Yearly</th><th>No Caching</th><th>RAG Cost</th><th>Savings</th></tr></thead>
+            <tbody>
+              <tr><td>100</td><td>5,200</td><td>$780</td><td>$52</td><td class="sv-o">$728 (93%)</td></tr>
+              <tr><td>1,000</td><td>52,000</td><td>$7,800</td><td>$520</td><td class="sv-o">$7,280 (93%)</td></tr>
+              <tr><td>10,000</td><td>520,000</td><td>$78,000</td><td>$5,200</td><td class="sv-o">$72,800 (93%)</td></tr>
+              <tr><td>100,000</td><td>5,200,000</td><td>$780,000</td><td>$52,000</td><td class="sv-o">$728,000 (93%)</td></tr>
+            </tbody>
+          </table>
+          <div class="tbl-label">Daily — RAG</div>
+          <table class="cost-table">
+            <thead><tr><th>Users</th><th>Daily Questions</th><th>No Caching</th><th>RAG Cost</th><th>Savings</th></tr></thead>
+            <tbody>
+              <tr><td>1,000</td><td>5/day</td><td>$273,750</td><td>$18,250</td><td class="sv-o">$255,500</td></tr>
+              <tr><td>1,000</td><td>10/day</td><td>$547,500</td><td>$36,500</td><td class="sv-o">$511,000</td></tr>
+              <tr><td>10,000</td><td>5/day</td><td>$2,737,500</td><td>$182,500</td><td class="sv-o">$2,555,000</td></tr>
+              <tr><td>10,000</td><td>10/day</td><td>$5,475,000</td><td>$365,000</td><td class="sv-o">$5,110,000</td></tr>
+              <tr><td>100,000</td><td>5/day</td><td>$27,375,000</td><td>$1,825,000</td><td class="sv-o">$25,550,000</td></tr>
+              <tr><td>100,000</td><td>10/day</td><td>$54,750,000</td><td>$3,650,000</td><td class="sv-o">$51,100,000</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="provider-block">
+      <div class="pb-head"><span class="pb-dot" style="background:var(--claude)"></span><span class="pb-name">Claude 4.6 Sonnet</span><span class="pb-note">Managed / Prefix caching · cache reads at ~0.1× standard input price</span></div>
+      <div class="pb-body">
+        <div class="tbl-label">Yearly</div>
+        <table class="cost-table">
+          <thead><tr><th>Users</th><th>Yearly</th><th>No Caching</th><th>With Caching</th><th>Savings</th></tr></thead>
+          <tbody>
+            <tr><td>100</td><td>5,200</td><td>$394</td><td>$83</td><td class="sv-c">$311 (79%)</td></tr>
+            <tr><td>1,000</td><td>52,000</td><td>$3,937</td><td>$551</td><td class="sv-c">$3,386 (86%)</td></tr>
+            <tr><td>10,000</td><td>520,000</td><td>$39,367</td><td>$5,231</td><td class="sv-c">$34,136 (87%)</td></tr>
+            <tr><td>100,000</td><td>5,200,000</td><td>$393,666</td><td>$52,033</td><td class="sv-c">$341,633 (87%)</td></tr>
+          </tbody>
+        </table>
+        <div class="tbl-label">Daily scenarios</div>
+        <table class="cost-table">
+          <thead><tr><th>Users</th><th>Daily Questions</th><th>No Caching</th><th>With Caching</th><th>Savings</th></tr></thead>
+          <tbody>
+            <tr><td>1,000</td><td>5/day</td><td>$138,162</td><td>$18,282</td><td class="sv-c">$119,880 (87%)</td></tr>
+            <tr><td>1,000</td><td>10/day</td><td>$276,323</td><td>$36,532</td><td class="sv-c">$239,791 (87%)</td></tr>
+            <tr><td>10,000</td><td>5/day</td><td>$1,380,000</td><td>$182,540</td><td class="sv-c">$1,197,460 (87%)</td></tr>
+            <tr><td>10,000</td><td>10/day</td><td>$2,760,000</td><td>$365,049</td><td class="sv-c">$2,394,951 (87%)</td></tr>
+            <tr><td>100,000</td><td>5/day</td><td>$13,820,000</td><td>$1,830,000</td><td class="sv-c">$11,990,000 (87%)</td></tr>
+            <tr><td>100,000</td><td>10/day</td><td>$27,630,000</td><td>$3,650,000</td><td class="sv-c">$23,980,000 (87%)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabbed-view" id="tabbed-view">
+    <div class="provider-tabs">
+      <button class="ptab ptab-g active" onclick="setTab('g')"><span class="ptab-dot"></span>Gemini 2.5 Flash</button>
+      <button class="ptab ptab-o" onclick="setTab('o')"><span class="ptab-dot"></span>OpenAI GPT-4.1 Mini</button>
+      <button class="ptab ptab-c" onclick="setTab('c')"><span class="ptab-dot"></span>Claude 4.6 Sonnet</button>
+    </div>
+    <div class="tab-panel active" id="tab-g">
+      <div class="tab-note">$0.30/1M standard · $0.03/1M cached (90% off) · $1.00/1M/hr storage · $2.50/1M output</div>
+      <div class="tbl-label">Yearly</div>
+      <table class="cost-table"><thead><tr><th>Users</th><th>Yearly</th><th>No Caching</th><th>With Caching</th><th>Savings</th></tr></thead><tbody>
+        <tr><td>100</td><td>5,200</td><td>$57</td><td>$640</td><td class="sv-g">Cache costs more</td></tr>
+        <tr><td>1,000</td><td>52,000</td><td>$570</td><td>$645</td><td class="sv-g">≈ Breakeven</td></tr>
+        <tr><td>10,000</td><td>520,000</td><td>$5,700</td><td>$696</td><td class="sv-g">$5,004 (88%)</td></tr>
+        <tr><td>100,000</td><td>5,200,000</td><td>$57,000</td><td>$1,208</td><td class="sv-g">$55,792 (98%)</td></tr>
+      </tbody></table>
+      <div class="tbl-label">Daily</div>
+      <table class="cost-table"><thead><tr><th>Users</th><th>Daily Questions</th><th>No Caching</th><th>With Caching</th><th>Savings</th></tr></thead><tbody>
+        <tr><td>1,000</td><td>5/day</td><td>$44,480</td><td>$1,180</td><td class="sv-g">$43,300</td></tr>
+        <tr><td>1,000</td><td>10/day</td><td>$88,960</td><td>$1,720</td><td class="sv-g">$87,240</td></tr>
+        <tr><td>10,000</td><td>5/day</td><td>$444,800</td><td>$6,045</td><td class="sv-g">$438,755</td></tr>
+        <tr><td>10,000</td><td>10/day</td><td>$889,600</td><td>$11,450</td><td class="sv-g">$878,150</td></tr>
+        <tr><td>100,000</td><td>5/day</td><td>$4,448,000</td><td>$54,680</td><td class="sv-g">$4,393,320</td></tr>
+        <tr><td>100,000</td><td>10/day</td><td>$8,896,000</td><td>$108,745</td><td class="sv-g">$8,787,255</td></tr>
+      </tbody></table>
+    </div>
+    <div class="tab-panel" id="tab-o">
+      <div class="tab-note">Caching reduces cost per token, not tokens sent. The RAG option below retrieves only relevant chunks and is the most cost-effective approach at scale.</div>
+      <div class="tbl-label">Yearly — standard caching</div>
+      <table class="cost-table"><thead><tr><th>Users</th><th>Yearly</th><th>No Caching</th><th>With Caching</th><th>Savings</th></tr></thead><tbody>
+        <tr><td>100</td><td>5,200</td><td>$780</td><td>$405</td><td class="sv-o">$375 (48%)</td></tr>
+        <tr><td>1,000</td><td>52,000</td><td>$7,800</td><td>$4,050</td><td class="sv-o">$3,750 (48%)</td></tr>
+        <tr><td>10,000</td><td>520,000</td><td>$78,000</td><td>$40,500</td><td class="sv-o">$37,500 (48%)</td></tr>
+        <tr><td>100,000</td><td>5,200,000</td><td>$780,000</td><td>$405,000</td><td class="sv-o">$375,000 (48%)</td></tr>
+      </tbody></table>
+      <div class="tbl-label">Daily — standard caching</div>
+      <table class="cost-table"><thead><tr><th>Users</th><th>Daily Questions</th><th>No Caching</th><th>With Caching</th><th>Savings</th></tr></thead><tbody>
+        <tr><td>1,000</td><td>5/day</td><td>$273,750</td><td>$142,350</td><td class="sv-o">$131,400</td></tr>
+        <tr><td>1,000</td><td>10/day</td><td>$547,500</td><td>$284,700</td><td class="sv-o">$262,800</td></tr>
+        <tr><td>10,000</td><td>5/day</td><td>$2,737,500</td><td>$1,423,500</td><td class="sv-o">$1,314,000</td></tr>
+        <tr><td>10,000</td><td>10/day</td><td>$5,475,000</td><td>$2,847,000</td><td class="sv-o">$2,628,000</td></tr>
+        <tr><td>100,000</td><td>5/day</td><td>$27,375,000</td><td>$14,235,000</td><td class="sv-o">$13,140,000</td></tr>
+        <tr><td>100,000</td><td>10/day</td><td>$54,750,000</td><td>$28,470,000</td><td class="sv-o">$26,280,000</td></tr>
+      </tbody></table>
+      <div class="rag-block">
+        <div class="rag-eyebrow">RAG Alternative</div>
+        <div class="rag-desc">Retrieves only relevant chunks (~2–5K tokens). Reduces cost by 93% vs. no caching.</div>
+        <div class="tbl-label">Yearly — RAG</div>
+        <table class="cost-table"><thead><tr><th>Users</th><th>Yearly</th><th>No Caching</th><th>RAG Cost</th><th>Savings</th></tr></thead><tbody>
+          <tr><td>100</td><td>5,200</td><td>$780</td><td>$52</td><td class="sv-o">$728 (93%)</td></tr>
+          <tr><td>1,000</td><td>52,000</td><td>$7,800</td><td>$520</td><td class="sv-o">$7,280 (93%)</td></tr>
+          <tr><td>10,000</td><td>520,000</td><td>$78,000</td><td>$5,200</td><td class="sv-o">$72,800 (93%)</td></tr>
+          <tr><td>100,000</td><td>5,200,000</td><td>$780,000</td><td>$52,000</td><td class="sv-o">$728,000 (93%)</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab-c">
+      <div class="tab-note">Managed / Prefix caching. Cache reads at ~0.1× standard input price, 5-minute TTL.</div>
+      <div class="tbl-label">Yearly</div>
+      <table class="cost-table"><thead><tr><th>Users</th><th>Yearly</th><th>No Caching</th><th>With Caching</th><th>Savings</th></tr></thead><tbody>
+        <tr><td>100</td><td>5,200</td><td>$394</td><td>$83</td><td class="sv-c">$311 (79%)</td></tr>
+        <tr><td>1,000</td><td>52,000</td><td>$3,937</td><td>$551</td><td class="sv-c">$3,386 (86%)</td></tr>
+        <tr><td>10,000</td><td>520,000</td><td>$39,367</td><td>$5,231</td><td class="sv-c">$34,136 (87%)</td></tr>
+        <tr><td>100,000</td><td>5,200,000</td><td>$393,666</td><td>$52,033</td><td class="sv-c">$341,633 (87%)</td></tr>
+      </tbody></table>
+      <div class="tbl-label">Daily</div>
+      <table class="cost-table"><thead><tr><th>Users</th><th>Daily Questions</th><th>No Caching</th><th>With Caching</th><th>Savings</th></tr></thead><tbody>
+        <tr><td>1,000</td><td>5/day</td><td>$138,162</td><td>$18,282</td><td class="sv-c">$119,880 (87%)</td></tr>
+        <tr><td>1,000</td><td>10/day</td><td>$276,323</td><td>$36,532</td><td class="sv-c">$239,791 (87%)</td></tr>
+        <tr><td>10,000</td><td>5/day</td><td>$1,380,000</td><td>$182,540</td><td class="sv-c">$1,197,460 (87%)</td></tr>
+        <tr><td>10,000</td><td>10/day</td><td>$2,760,000</td><td>$365,049</td><td class="sv-c">$2,394,951 (87%)</td></tr>
+        <tr><td>100,000</td><td>5/day</td><td>$13,820,000</td><td>$1,830,000</td><td class="sv-c">$11,990,000 (87%)</td></tr>
+        <tr><td>100,000</td><td>10/day</td><td>$27,630,000</td><td>$3,650,000</td><td class="sv-c">$23,980,000 (87%)</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-eye">Key Takeaway</div>
+    <div class="callout-title">Context caching is mandatory at scale.</div>
+    <div class="callout-body">Without caching, a sudden surge in usage could generate an API bill of thousands of dollars in a single day. With caching, the dominant cost shifts to output tokens — a much healthier position. At 10,000+ users, savings exceed 87% across all three providers.</div>
+  </div>
+</div>
+</div>
+
+</div>
+
+<script>
+function setView(mode){
+  const s=document.getElementById('stacked-view'),t=document.getElementById('tabbed-view');
+  const bs=document.getElementById('btn-stacked'),bt=document.getElementById('btn-tabbed');
+  if(mode==='stacked'){s.style.display='block';t.style.display='none';bs.classList.add('active');bt.classList.remove('active')}
+  else{s.style.display='none';t.style.display='block';bs.classList.remove('active');bt.classList.add('active')}
+}
+function setTab(p){
+  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(t=>t.classList.remove('active'));
+  document.querySelector('.ptab-'+p).classList.add('active');
+  document.getElementById('tab-'+p).classList.add('active');
+}
+</script>
+</div>
+
+<div class="page-section" id="page-platform">
+<div class="page-header">
+  <div class="ph-eyebrow">Antikytera · Technical Briefing for Safari App</div>
+  <h1 class="ph-title">Platform<br><em>Decision</em></h1>
+  <p class="ph-lead">Web App or Cross-Platform Native — a direct comparison for a 90-day consecutive wellness programme. The choice of platform directly affects whether users complete the journey.</p>
+</div>
+<div class="page-body">
+
+<div class="section" id="comparison">
+  <div class="sec-label"><span class="sec-num">01</span><h2 class="sec-title">Feature Comparison</h2><span class="sec-rule"></span></div>
+  <table class="data-table">
+    <thead><tr><th>Feature</th><th class="th-web">Web App</th><th>Cross-Platform Native<br><span style="font-weight:400;font-size:10px;letter-spacing:0;text-transform:none">(React Native / Flutter)</span></th></tr></thead>
+    <tbody>
+      <tr><td>Push Notifications</td><td><span class="warn">Limited</span> — unreliable on iOS unless the browser is open.</td><td><span class="good">Full native push</span> — lock screen delivery, always on.</td></tr>
+      <tr><td>Daily Engagement</td><td>User must open a browser tab manually. No reliable daily nudge.</td><td>Home screen icon + push notification. Habit formation is built in.</td></tr>
+      <tr><td>Cost to Build</td><td>Lower upfront. Fastest path to launch.</td><td>~60–70% of two separate native apps. One codebase, both platforms.</td></tr>
+      <tr><td>App Store Presence</td><td>No listing. Discovery via direct link or web search only.</td><td>Listed on App Store and Google Play. Adds trust and discoverability.</td></tr>
+      <tr><td>Platform Review</td><td>None required.</td><td>Apple and Google review before launch — a trust signal for wellness products.</td></tr>
+      <tr><td>Apple's 30% Cut</td><td>Not applicable.</td><td>Applies to in-app subscriptions. Routable via website subscription (adds friction).</td></tr>
+      <tr><td>Offline Access</td><td>Limited without additional engineering.</td><td>Handled natively out of the box.</td></tr>
+      <tr><td>Feel &amp; Polish</td><td>Browser constraints visible (address bar, back button).</td><td>Full-screen, immersive. Appropriate for an emotionally engaged audience.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section" id="timeline">
+  <div class="sec-label"><span class="sec-num">02</span><h2 class="sec-title">Development Timeline</h2><span class="sec-rule"></span></div>
+  <p class="sec-intro">Indicative ranges for Safari App's scope — structured 90-day programme, AI integration, couple pairing, push notifications, content library.</p>
+  <table class="tl-table">
+    <thead><tr><th>Phase</th><th style="color:var(--web)">Web App</th><th>Cross-Platform Native</th></tr></thead>
+    <tbody>
+      <tr><td>Design &amp; Prototype</td><td><div class="bar-wrap"><div class="bar bar-web" style="width:54px"></div>3–4 wks</div></td><td><div class="bar-wrap"><div class="bar bar-nat" style="width:66px"></div>4–5 wks</div></td></tr>
+      <tr><td>Core Development</td><td><div class="bar-wrap"><div class="bar bar-web" style="width:96px"></div>8–12 wks</div></td><td><div class="bar-wrap"><div class="bar bar-nat" style="width:128px"></div>12–16 wks</div></td></tr>
+      <tr><td>AI Integration</td><td><div class="bar-wrap"><div class="bar bar-web" style="width:44px"></div>2–3 wks</div></td><td><div class="bar-wrap"><div class="bar bar-nat" style="width:44px"></div>2–3 wks</div></td></tr>
+      <tr><td>Testing &amp; QA</td><td><div class="bar-wrap"><div class="bar bar-web" style="width:44px"></div>2–3 wks</div></td><td><div class="bar-wrap"><div class="bar bar-nat" style="width:56px"></div>3–4 wks</div></td></tr>
+      <tr><td>Store Submission</td><td style="color:var(--muted);font-style:italic;font-size:13px">Not required</td><td><div class="bar-wrap"><div class="bar bar-nat" style="width:22px"></div>1–2 wks</div></td></tr>
+      <tr class="total"><td>Total to Launch</td><td style="color:var(--web)">~15–22 weeks</td><td>~22–30 weeks</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section" id="recommendation">
+  <div class="sec-label"><span class="sec-num">03</span><h2 class="sec-title">Recommendation</h2><span class="sec-rule"></span></div>
+  <div class="callout">
+    <div class="callout-eye">Antikytera Position</div>
+    <div class="callout-title">Safari App calls for native.</div>
+    <div class="callout-body">The 90-day consecutive engagement requirement makes push notifications the most critical feature in the product — not a convenience. Without them, users must remember on their own, every day, for three months. A cross-platform approach (React Native or Flutter) delivers this at roughly 60–70% the cost of two separate apps.</div>
+  </div>
+  <p style="font-size:10.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin:28px 0 12px">Three points to factor in</p>
+  <div class="card-grid">
+    
+    
+    
+  </div>
+</div>
+
+</a>
+  
+</div>
+
+</div>
+</div>
+
+<div class="page-section" id="page-features">
+<div class="page-header">
+  <div class="ph-eyebrow">Antikytera · Technical Briefing for Safari App</div>
+  <h1 class="ph-title">AI in<br><em>Safari App</em></h1>
+  <p class="ph-lead">A complete map of how AI is implemented across Safari App — organised by app section. The Journey covers daily interaction and weekly reflection; Content Vault covers personalised discovery. Includes the admin layer, shared infrastructure, and planned roadmap.</p>
+</div>
+
+<div class="page-body">
+
+<!-- SECTION LABEL STYLE FOR SUB-GROUPS -->
+<style>
+.sub-label{font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);padding:0 0 10px;margin-top:28px;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.sub-label::after{content:'';flex:1;height:1px;background:var(--rule)}
+.sub-label:first-child{margin-top:0}
+</style>
+
+<!-- 01 THE JOURNEY -->
+<div class="section" id="user-features">
+  <div class="sec-label"><span class="sec-num">01</span><h2 class="sec-title">The Journey</h2><span class="sec-rule"></span></div>
+  <p class="sec-intro">Features that support the user's daily 90-day experience — guidance, tracking, and weekly reflection.</p>
+
+  <div class="sub-label">Conversation &amp; Logging</div>
+
+  <div class="feature-row acc-safari">
+    <div class="fr-label"><div class="fr-icon">🧭</div><div class="fr-name">Safari Guide</div><div class="fr-loc">Dedicated page · main navigation</div></div>
+    <div class="fr-body">
+      <p class="fr-desc">The core AI experience in Safari App. Users converse with the Guide — a persona grounded in the proprietary method — to ask questions, receive personalised wellness guidance, and log habits in natural language. Every response is aware of the user's journey day, phase, quiz red zones, completed habits, and supplement stack.</p>
+      <div class="fr-caps">
+        <span class="cap"><span class="cap-dot" style="background:var(--safari)"></span>Multi-turn streaming chat</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--safari)"></span>Full &amp; Quick response modes</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--safari)"></span>Voice input</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--safari)"></span>Book-grounded answers</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--safari)"></span>Natural language habit extraction</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--safari)"></span>Supplement stack management</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--safari)"></span>Chat history persisted</span>
+      </div>
+      <p class="fr-detail"><strong>Personalisation:</strong> Journey day, phase, quiz red zones, today's habits, and supplement stack are injected into every request. <strong>Book grounding:</strong> Relevant chapters fetched dynamically based on detected topic — up to 8,000 words per call.</p>
+    </div>
+  </div>
+
+  <div class="feature-row acc-habit">
+    <div class="fr-label"><div class="fr-icon">📊</div><div class="fr-name">Habit Logging via Chat</div><div class="fr-loc">Today panel · "Log by chat"</div></div>
+    <div class="fr-body">
+      <p class="fr-desc">A natural extension of the Safari Guide. Users describe their day in natural language and the AI extracts structured habit data automatically. The app renders confirmation chips — "Sleep ✓ · CoQ10 ✓" — before saving. Reduces daily tracking friction, which is critical for maintaining a 90-day streak.</p>
+      <div class="fr-caps">
+        <span class="cap"><span class="cap-dot" style="background:var(--habit)"></span>Natural language input</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--habit)"></span>Structured data extraction</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--habit)"></span>Visual confirmation chips</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--habit)"></span>Powered by the same Guide infrastructure</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-label">Weekly Reflection</div>
+
+  <div class="feature-row" style="border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-bottom:12px">
+    <div class="fr-label" style="background:#f5f3ff;border-right-color:#ddd6fe">
+      <div class="fr-icon">📋</div>
+      <div class="fr-name" style="color:#4a2f8a">Weekly Report Card</div>
+      <div class="fr-loc">Settings → Weekly Report Card</div>
+    </div>
+    <div class="fr-body">
+      <p class="fr-desc">A structured weekly summary of the user's journey performance — generated automatically and accessible on demand. Gives users a clear, honest picture of where they are excelling and where to focus, with a forward-looking nudge for the week ahead.</p>
+      <div class="fr-caps">
+        <span class="cap"><span class="cap-dot" style="background:#4a2f8a"></span>Grade card (A+ to F) · 7-day habit consistency</span>
+        <span class="cap"><span class="cap-dot" style="background:#4a2f8a"></span>Habit streaks with 7-day dot chart</span>
+        <span class="cap"><span class="cap-dot" style="background:#4a2f8a"></span>Supplement consistency (%)</span>
+        <span class="cap"><span class="cap-dot" style="background:#4a2f8a"></span>Missed days highlighted</span>
+        <span class="cap"><span class="cap-dot" style="background:#4a2f8a"></span>Up to 3 coaching nudges for the week ahead</span>
+        <span class="cap"><span class="cap-dot" style="background:#4a2f8a"></span>Journey progress — day X of 90</span>
+        <span class="cap"><span class="cap-dot" style="background:#4a2f8a"></span>Download as text report</span>
+      </div>
+      <p class="fr-detail"><strong>Grade logic:</strong> Overall score based on 7-day habit completion rate across all active habits. <strong>Coaching nudges:</strong> Pulled from the week-ahead schedule, including phase transitions. <strong>Export:</strong> Plain-text summary file for sharing or personal records.</p>
+    </div>
+  </div>
+</div>
+
+<!-- 02 CONTENT VAULT -->
+<div class="section" id="content-vault">
+  <div class="sec-label"><span class="sec-num">02</span><h2 class="sec-title">Content Vault</h2><span class="sec-rule"></span></div>
+  <p class="sec-intro">Features that personalise and enrich the user's experience inside the content library.</p>
+
+  <div class="feature-row acc-content">
+    <div class="fr-label"><div class="fr-icon">💬</div><div class="fr-name">Content Chat</div><div class="fr-loc">Drawer inside any Content Vault article</div></div>
+    <div class="fr-body">
+      <p class="fr-desc">While reading an article, users open a side drawer and ask the Guide questions specific to that content. The full article text is injected as context, so answers are precise and directly relevant. Each session is independent and resets when the article is closed.</p>
+      <div class="fr-caps">
+        <span class="cap"><span class="cap-dot" style="background:var(--content)"></span>Scoped to current article</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--content)"></span>Same personalisation as main Guide</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--content)"></span>Ephemeral — resets per session</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="feature-row acc-rec">
+    <div class="fr-label"><div class="fr-icon">✨</div><div class="fr-name">Recommended for You</div><div class="fr-loc">Content Vault · top carousel</div></div>
+    <div class="fr-body">
+      <p class="fr-desc">3–5 articles selected by AI based on the user's quiz red zones, current phase, and journey day. Each card includes a one-sentence personalised reason. Results are cached per session to avoid repeated calls and control cost.</p>
+      <div class="fr-caps">
+        <span class="cap"><span class="cap-dot" style="background:var(--rec)"></span>Phase &amp; quiz-aware selection</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--rec)"></span>One-sentence reason per item</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--rec)"></span>Lightweight model for efficiency</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--rec)"></span>Session-cached</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 03 ADMIN -->
+<div class="section" id="admin">
+  <div class="sec-label"><span class="sec-num">03</span><h2 class="sec-title">Admin Dashboard</h2><span class="sec-rule"></span></div>
+  <div class="feature-row acc-admin">
+    <div class="fr-label"><div class="fr-icon">🛠</div><div class="fr-name">AI Usage Analytics</div><div class="fr-loc">Admin dashboard · restricted access</div></div>
+    <div class="fr-body">
+      <p class="fr-desc">Every AI call across the app is silently logged — token counts, response times, feature source, topic category, and timestamp. Visible only to administrators. Used for cost monitoring, usage analysis, and early detection of unexpected spikes.</p>
+      <div class="fr-caps">
+        <span class="cap"><span class="cap-dot" style="background:var(--admin)"></span>Token &amp; cost tracking</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--admin)"></span>Response time per call</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--admin)"></span>Per-feature breakdown</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--admin)"></span>Rate limit visibility</span>
+        <span class="cap"><span class="cap-dot" style="background:var(--admin)"></span>Admin-only access</span>
+      </div>
+      <p class="fr-detail"><strong>Logged per call:</strong> feature · input + output tokens · response time (ms) · topic · timestamp · anonymised user reference.</p>
+    </div>
+  </div>
+</div>
+
+<!-- 04 INFRASTRUCTURE -->
+<div class="section" id="infrastructure">
+  <div class="sec-label"><span class="sec-num">04</span><h2 class="sec-title">Shared Infrastructure</h2><span class="sec-rule"></span></div>
+  <p class="sec-intro">All features share a common backbone. Improvements to infrastructure benefit every feature simultaneously.</p>
+  <div class="infra-grid">
+    <div class="infra-card"><div class="infra-icon">🔄</div><div class="infra-title">Dual Provider Support</div><div class="infra-body">Development uses a managed AI gateway. Production switches to Google Gemini direct via <code>USE_GOOGLE_AI=true</code> — faster and more cost-efficient at scale.</div></div>
+    <div class="infra-card"><div class="infra-icon">📈</div><div class="infra-title">Silent Usage Logging</div><div class="infra-body">All calls write to <code>ai_usage_logs</code> with token counts, timing, and topic. No user impact. Admin-only access.</div></div>
+    <div class="infra-card"><div class="infra-icon">🛡</div><div class="infra-title">Rate Limit Handling</div><div class="infra-body">429 and 402 errors are caught at every touchpoint and surfaced with a clear message — no silent failures for users.</div></div>
+  </div>
+</div>
+
+<!-- 05 PLANNED -->
+<div class="section" id="roadmap">
+  <div class="sec-label"><span class="sec-num">05</span><h2 class="sec-title">Planned Features</h2><span class="sec-rule"></span></div>
+  <p class="sec-intro">Three features scoped for the next development phase.</p>
+  <div class="roadmap-grid">
+    <div class="rm-card"><div class="rm-tag">Planned</div><div class="rm-title">Quiz Result Narratives</div><div class="rm-body">After the onboarding quiz, users receive a personalised AI narrative explaining their red zones and setting the tone for their 90-day journey.</div></div>
+    <div class="rm-card"><div class="rm-tag">Planned</div><div class="rm-title">Consultation Prep</div><div class="rm-body">Before a scheduled consultation, the AI generates a concise summary of the user's recent habits, chat concerns, and progress for the doctor.</div></div>
+    <div class="rm-card"><div class="rm-tag">Planned</div><div class="rm-title">Safari Report Card — AI Narrative</div><div class="rm-body">The Report Card gains an AI-written paragraph interpreting the week's data — offering context, encouragement, and a personalised coaching message beyond the raw numbers.</div></div>
+  </div>
+</div>
+
+<div class="pn-title">Platform Decision</div><div class="pn-desc">Web App vs. Native — comparison, timeline, and recommendation.</div></a>
+  
+</div>
+
+</div>
+</div>
+
+<script>
+function showPage(name) {
+  // Hide all pages
+  document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+  // Hide all anchor sets
+  document.querySelectorAll('.nav-anchors').forEach(a => a.style.display = 'none');
+  // Deactivate all nav buttons
+  document.querySelectorAll('.nav-page').forEach(b => b.classList.remove('active'));
+  // Show chosen page
+  document.getElementById('page-' + name).classList.add('active');
+  // Show matching anchors
+  const anchors = document.getElementById('nav-anchors-' + name);
+  if (anchors) anchors.style.display = 'flex';
+  // Activate nav button
+  document.getElementById('nav-' + name).classList.add('active');
+  // Scroll to top
+  window.scrollTo(0, 0);
+}
+
+function setView(mode) {
+  const s = document.getElementById('stacked-view'), t = document.getElementById('tabbed-view');
+  const bs = document.getElementById('btn-stacked'), bt = document.getElementById('btn-tabbed');
+  if (mode === 'stacked') {
+    s.style.display = 'block'; t.style.display = 'none';
+    bs.classList.add('active'); bt.classList.remove('active');
+  } else {
+    s.style.display = 'none'; t.style.display = 'block';
+    bs.classList.remove('active'); bt.classList.add('active');
+  }
+}
+
+function setTab(p) {
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(t => t.classList.remove('active'));
+  document.querySelector('.ptab-' + p).classList.add('active');
+  document.getElementById('tab-' + p).classList.add('active');
+}
+</script>
+
+
+<div class="page-section" id="page-infra">
+
+<div class="page-header">
+  <div class="ph-eyebrow">Antikytera · Technical Briefing for Safari App</div>
+  <h1 class="ph-title">Infrastructure<br><em>Overview</em></h1>
+  <p class="ph-lead">Two parallel workstreams run simultaneously — prototyping in Lovable and building the native app in Flutter. Features graduate from one to the other as they mature.</p>
+</div>
+
+<div class="page-body">
+
+  <!-- 01 TWO PARALLEL TRACKS -->
+  <div class="section" id="infra-overview">
+    <div class="sec-label"><span class="sec-num">01</span><h2 class="sec-title">Two Parallel Workstreams</h2><span class="sec-rule"></span></div>
+
+    <!-- SIDE BY SIDE TRACKS -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px">
+
+      <!-- PROTOTYPING -->
+      <div style="border:1px solid var(--rule);border-radius:12px;overflow:hidden">
+        <div style="padding:16px 20px;background:#7a4800;display:flex;align-items:center;gap:10px">
+          <div style="width:8px;height:8px;border-radius:50%;background:#fbbf24;flex-shrink:0"></div>
+          <span style="font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;color:#fef3c7">Prototyping Track</span>
+          <span style="margin-left:auto;font-size:11px;color:#d97706;font-style:italic">Lovable · DEV</span>
+        </div>
+        <div style="padding:20px">
+          <p style="font-size:13.5px;font-weight:300;color:#333;line-height:1.75;margin-bottom:16px">New features are designed and tested here. The app runs on <strong>Lovable</strong>, connected to a shared <strong>Supabase</strong> database. When a feature is stable, it is periodically published to a preview web URL for your review.</p>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:#555">
+              <span style="width:6px;height:6px;border-radius:50%;background:#d97706;flex-shrink:0"></span>
+              <span>App &amp; Admin Dashboard on Lovable Cloud</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:#555">
+              <span style="width:6px;height:6px;border-radius:50%;background:#d97706;flex-shrink:0"></span>
+              <span>Database on shared Supabase (DEV)</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:#555">
+              <span style="width:6px;height:6px;border-radius:50%;background:#d97706;flex-shrink:0"></span>
+              <span>AI via Lovable Gateway (free tier)</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:#555">
+              <span style="width:6px;height:6px;border-radius:50%;background:#d97706;flex-shrink:0"></span>
+              <span>Preview at <code style="font-size:11.5px;background:#ede9e1;padding:1px 5px;border-radius:3px">safariweb.lovable.app</code> · <code style="font-size:11.5px;background:#ede9e1;padding:1px 5px;border-radius:3px">safariapp.lovable.app</code></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NATIVE -->
+      <div style="border:1px solid var(--rule);border-radius:12px;overflow:hidden">
+        <div style="padding:16px 20px;background:#075985;display:flex;align-items:center;gap:10px">
+          <div style="width:8px;height:8px;border-radius:50%;background:#7dd3fc;flex-shrink:0"></div>
+          <span style="font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;color:#e0f2fe">Native App Track</span>
+          <span style="margin-left:auto;font-size:11px;color:#7dd3fc;font-style:italic">Flutter · PROD</span>
+        </div>
+        <div style="padding:20px">
+          <p style="font-size:13.5px;font-weight:300;color:#333;line-height:1.75;margin-bottom:16px">Mature features are progressively rebuilt here as a proper native app in <strong>Flutter</strong>, backed by a <strong>Laravel</strong> API (hosted on <strong>Hostinger</strong>) and a dedicated production <strong>Supabase</strong> database. This is the version that ships to users.</p>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:#555">
+              <span style="width:6px;height:6px;border-radius:50%;background:#0369a1;flex-shrink:0"></span>
+              <span>Native iOS &amp; Android app (Flutter)</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:#555">
+              <span style="width:6px;height:6px;border-radius:50%;background:#0369a1;flex-shrink:0"></span>
+              <span>Backend API on Laravel, hosted on <strong>Hostinger</strong></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:#555">
+              <span style="width:6px;height:6px;border-radius:50%;background:#0369a1;flex-shrink:0"></span>
+              <span>Dedicated Supabase (PROD) — separate from DEV</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:#555">
+              <span style="width:6px;height:6px;border-radius:50%;background:#0369a1;flex-shrink:0"></span>
+              <span>AI via direct Google Gemini API</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- GRADUATION ARROW -->
+    <div style="margin-top:14px;padding:14px 20px;background:var(--cream);border-radius:10px;border:1px solid var(--rule);display:flex;align-items:center;gap:12px">
+      <span style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap">Feature flow</span>
+      <div style="flex:1;display:flex;align-items:center;gap:6px;font-size:12.5px;color:#3a3530;font-weight:300;flex-wrap:wrap">
+        <span style="background:#fef3c7;padding:4px 10px;border-radius:6px;font-weight:500;color:#7a4800;white-space:nowrap">Prototype in Lovable</span>
+        <span style="color:var(--rule)">→</span>
+        <span style="background:#ede9e1;padding:4px 10px;border-radius:6px;font-weight:500;color:var(--muted);white-space:nowrap">Validated &amp; stable</span>
+        <span style="color:var(--rule)">→</span>
+        <span style="background:#e0f2fe;padding:4px 10px;border-radius:6px;font-weight:500;color:#075985;white-space:nowrap">Rebuilt in Flutter</span>
+        <span style="color:var(--rule)">→</span>
+        <span style="background:#f0fdf4;padding:4px 10px;border-radius:6px;font-weight:500;color:#1f5c3e;white-space:nowrap">Ships to App Store</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 THE PREVIEW URL -->
+  <div class="section" id="infra-dev">
+    <div class="sec-label"><span class="sec-num">02</span><h2 class="sec-title">The Preview URL</h2><span class="sec-rule"></span></div>
+    <p class="sec-intro">The preview URLs (<strong>safariweb.lovable.app</strong> · <strong>safariapp.lovable.app</strong>) is not the final product — it is a living snapshot of what has been prototyped so far. It updates whenever new features are published from the DEV environment.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:4px">
+      <div style="background:var(--cream);border-radius:10px;padding:18px;border:1px solid var(--rule)">
+        <div style="font-weight:600;font-size:13.5px;color:var(--ink);margin-bottom:6px">What it is</div>
+        <div style="font-size:13px;font-weight:300;color:#555;line-height:1.6">A web app accessible from any browser. No installation needed — just open the URL and you see the current build.</div>
+      </div>
+      <div style="background:var(--cream);border-radius:10px;padding:18px;border:1px solid var(--rule)">
+        <div style="font-weight:600;font-size:13.5px;color:var(--ink);margin-bottom:6px">What it is not</div>
+        <div style="font-size:13px;font-weight:300;color:#555;line-height:1.6">Not the final app. Push notifications, full offline access, and App Store features are not available in a web preview.</div>
+      </div>
+      <div style="background:var(--cream);border-radius:10px;padding:18px;border:1px solid var(--rule)">
+        <div style="font-weight:600;font-size:13.5px;color:var(--ink);margin-bottom:6px">How to use it</div>
+        <div style="font-size:13px;font-weight:300;color:#555;line-height:1.6">Review new features, give feedback, and validate flows before they graduate to the native build.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 GOING TO PRODUCTION -->
+  <div class="section" id="infra-prod">
+    <div class="sec-label"><span class="sec-num">03</span><h2 class="sec-title">Going to Production</h2><span class="sec-rule"></span></div>
+    <p class="sec-intro">When enough features have matured in the native track, a release candidate is assembled and submitted to the app stores. DEV and PROD are always kept separate — nothing from testing reaches real users automatically.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px">
+      <div style="padding:20px 22px;background:#f0fdf4;border-radius:10px;border:1px solid #bbf7d0;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#16a34a"></div>
+        <div style="font-family:'DM Serif Display',serif;font-size:15px;font-weight:400;color:#14532d;margin-bottom:8px">Apple App Store</div>
+        <div style="font-size:13px;font-weight:300;color:#555;line-height:1.6">The iOS build is submitted for Apple review. Once approved, it is publicly available for download. Updates go through the same review cycle.</div>
+      </div>
+      <div style="padding:20px 22px;background:#eef2ff;border-radius:10px;border:1px solid #ddd6fe;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#2563eb"></div>
+        <div style="font-family:'DM Serif Display',serif;font-size:15px;font-weight:400;color:#1e3a8a;margin-bottom:8px">Google Play</div>
+        <div style="font-size:13px;font-weight:300;color:#555;line-height:1.6">The Android build goes through Google Play review — typically faster than Apple's. Once live, available to all Android users globally.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+
+
+
+
+
+<div class="page-section" id="page-business">
+
+<div class="page-header">
+  <div class="ph-eyebrow">Antikytera · Technical Briefing for Safari App</div>
+  <h1 class="ph-title">Business<br><em>Model</em></h1>
+  <p class="ph-lead">Safari App is a support platform, not a programme. The model is built around a clear hierarchy of contact: AI for everyday guidance, nurses for personalised human support, and doctors for expert opinion on demand.</p>
+</div>
+
+<div class="page-body">
+
+  <!-- 01 THE NURSE LAYER -->
+  <div class="section" id="biz-nurses">
+    <div class="sec-label"><span class="sec-num">01</span><h2 class="sec-title">The Nurse Layer</h2><span class="sec-rule"></span></div>
+    <p class="sec-intro">Nurses are the human core of the platform. Not a chatbot, not a doctor — a qualified professional who knows the protocol, understands the journey, and can answer the questions that matter most right now.</p>
+
+    <!-- THREE-COLUMN CONTACT HIERARCHY -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-bottom:20px">
+      <div style="padding:22px 20px;border-right:1px solid var(--rule);background:var(--cream)">
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Everyday</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;color:var(--ink);margin-bottom:10px">AI Guide</div>
+        <div style="font-size:13px;font-weight:300;color:#555;line-height:1.65;margin-bottom:14px">Available 24/7. Handles habit logging, daily navigation, progress summaries, and general protocol questions grounded in the book.</div>
+        <div style="font-size:12px;color:var(--muted);font-style:italic">Good for: "What should I do today?" · "Did I log everything?" · "Explain this chapter."</div>
+      </div>
+      <div style="padding:22px 20px;border-right:1px solid var(--rule);background:#fff8f0;position:relative">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--safari)"></div>
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--safari);margin-bottom:10px">Human · Core Layer</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;color:#7a4800;margin-bottom:10px">Nurse</div>
+        <div style="font-size:13px;font-weight:300;color:#555;line-height:1.65;margin-bottom:14px">A qualified professional who knows the protocol and the user's specific situation. Responds within 24 hours. Handles personalised, in-depth questions that require real clinical judgement.</div>
+        <div style="font-size:12px;color:#a16207;font-style:italic">Good for: "My results came back — what does this mean for my supplements?" · "I'm feeling X — should I adjust?" · "Is my progress on track?"</div>
+      </div>
+      <div style="padding:22px 20px;background:var(--cream)">
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">On demand</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;color:var(--ink);margin-bottom:10px">Doctor</div>
+        <div style="font-size:13px;font-weight:300;color:#555;line-height:1.65;margin-bottom:14px">A protocol-aligned specialist for cases that require expert medical review. Async, paid per session, and always positioned as complementary to the user's treating clinic.</div>
+        <div style="font-size:12px;color:var(--muted);font-style:italic">Good for: second opinions, reviewing test results in depth, or decisions that go beyond the protocol.</div>
+      </div>
+    </div>
+
+    <!-- WHY NURSES -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div style="border:1px solid var(--rule);border-radius:10px;padding:20px;background:var(--cream)">
+        <div style="font-weight:600;font-size:13.5px;color:var(--ink);margin-bottom:7px">Why not just more AI?</div>
+        <div style="font-size:13px;font-weight:300;color:#444;line-height:1.7">AI is excellent at scale and speed. But a fertility journey involves test results, symptoms, and emotional nuance that require a human who is accountable. The nurse provides that — and the AI makes the nurse's workload manageable.</div>
+      </div>
+      <div style="border:1px solid var(--rule);border-radius:10px;padding:20px;background:var(--cream)">
+        <div style="font-weight:600;font-size:13.5px;color:var(--ink);margin-bottom:7px">Why not just a doctor?</div>
+        <div style="font-size:13px;font-weight:300;color:#444;line-height:1.7">Doctors are expensive, hard to access, and carry regulatory complexity. Nurses with protocol expertise can answer the majority of meaningful questions faster, more affordably, and with the same personal care — escalating to a doctor only when necessary.</div>
+      </div>
+    </div>
+
+    <!-- OPERATIONAL NOTE -->
+    <div style="margin-top:12px;padding:18px 22px;background:var(--ink);border-radius:10px">
+      <div style="font-size:10.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin-bottom:8px">Operational model</div>
+      <div style="font-size:13px;font-weight:300;color:#a8a099;line-height:1.75">Nurse interactions are capped at 2–4 questions per month per subscriber, with a 24-hour async response window. This keeps the workload predictable, the service scalable, and the cost manageable — while ensuring each user gets a meaningful, considered response rather than a quick deflection.</div>
+    </div>
+  </div>
+
+  <!-- 02 TIER MAP -->
+  <div class="section" id="biz-tiers">
+    <div class="sec-label"><span class="sec-num">02</span><h2 class="sec-title">Platform Tiers</h2><span class="sec-rule"></span></div>
+    <p class="sec-intro">Five layers that stack cleanly. Users move up without losing what they already have.</p>
+
+    <div style="border:1px solid var(--rule);border-radius:12px;overflow:hidden">
+
+      <div style="display:grid;grid-template-columns:172px 1fr 156px;border-bottom:1px solid var(--rule)">
+        <div style="padding:16px 18px;background:#f0fdf4;border-right:1px solid var(--rule);display:flex;flex-direction:column;justify-content:center">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#16a34a;margin-bottom:4px">Free</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:15px;font-weight:400;color:#14532d">Core Journey</div>
+        </div>
+        <div style="padding:16px 18px;border-right:1px solid var(--rule)">
+          <div style="font-size:13px;font-weight:300;color:#333;line-height:1.65;margin-bottom:10px">The full 90-day programme — for everyone, no paywall, no trial. Daily habits, basic AI guidance, and progress tracking.</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px">
+            <span style="font-size:11px;background:#f0fdf4;color:#1f5c3e;border:1px solid #bbf7d0;padding:3px 8px;border-radius:5px;font-weight:500">90-day journey</span>
+            <span style="font-size:11px;background:#f0fdf4;color:#1f5c3e;border:1px solid #bbf7d0;padding:3px 8px;border-radius:5px;font-weight:500">Basic AI assistant</span>
+            <span style="font-size:11px;background:#f0fdf4;color:#1f5c3e;border:1px solid #bbf7d0;padding:3px 8px;border-radius:5px;font-weight:500">Habit tracking</span>
+          </div>
+        </div>
+        <div style="padding:16px 18px;display:flex;align-items:center;justify-content:center">
+          <span style="font-family:'DM Serif Display',serif;font-size:20px;font-weight:400;color:#16a34a">€0</span>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:172px 1fr 156px;border-bottom:1px solid var(--rule)">
+        <div style="padding:16px 18px;background:#fdf6e8;border-right:1px solid var(--rule);display:flex;flex-direction:column;justify-content:center">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#b87000;margin-bottom:4px">One-Time</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:15px;font-weight:400;color:#7a4800">Full Toolkit</div>
+        </div>
+        <div style="padding:16px 18px;border-right:1px solid var(--rule)">
+          <div style="font-size:13px;font-weight:300;color:#333;line-height:1.65;margin-bottom:10px">Permanent unlock of the complete programme content. Full depth without a recurring charge.</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px">
+            <span style="font-size:11px;background:#fdf6e8;color:#7a4800;border:1px solid #fde68a;padding:3px 8px;border-radius:5px;font-weight:500">All PDFs &amp; recipes</span>
+            <span style="font-size:11px;background:#fdf6e8;color:#7a4800;border:1px solid #fde68a;padding:3px 8px;border-radius:5px;font-weight:500">Protocol details</span>
+            <span style="font-size:11px;background:#fdf6e8;color:#7a4800;border:1px solid #fde68a;padding:3px 8px;border-radius:5px;font-weight:500">Deep content library</span>
+          </div>
+        </div>
+        <div style="padding:16px 18px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px">
+          <span style="font-family:'DM Serif Display',serif;font-size:20px;font-weight:400;color:#b87000">€12–19</span>
+          <span style="font-size:11px;color:var(--muted)">one-off</span>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:172px 1fr 156px;border-bottom:1px solid var(--rule);outline:2px solid #92400e;outline-offset:-1px;position:relative">
+        <div style="padding:16px 18px;background:#fff8f0;border-right:1px solid var(--rule);display:flex;flex-direction:column;justify-content:center">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--safari);margin-bottom:4px">Subscription · Core</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:15px;font-weight:400;color:#7a4800">Nurse Support</div>
+        </div>
+        <div style="padding:16px 18px;border-right:1px solid var(--rule)">
+          <div style="font-size:13px;font-weight:300;color:#333;line-height:1.65;margin-bottom:10px">Advanced AI, ongoing access beyond 90 days, weekly Report Card — and nurse access. This is the subscription's primary value: a qualified human available to answer the questions that matter most, personally and promptly.</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px">
+            <span style="font-size:11px;background:#fff8f0;color:#7a4800;border:1px solid #fed7aa;padding:3px 8px;border-radius:5px;font-weight:600">Nurse access (2–4×/month)</span>
+            <span style="font-size:11px;background:#fff8f0;color:#7a4800;border:1px solid #fed7aa;padding:3px 8px;border-radius:5px;font-weight:500">Advanced AI coach</span>
+            <span style="font-size:11px;background:#fff8f0;color:#7a4800;border:1px solid #fed7aa;padding:3px 8px;border-radius:5px;font-weight:500">Journey beyond 90 days</span>
+            <span style="font-size:11px;background:#fff8f0;color:#7a4800;border:1px solid #fed7aa;padding:3px 8px;border-radius:5px;font-weight:500">Weekly Report Card</span>
+          </div>
+        </div>
+        <div style="padding:16px 18px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px">
+          <span style="font-family:'DM Serif Display',serif;font-size:20px;font-weight:400;color:var(--safari)">€4.99–9.99</span>
+          <span style="font-size:11px;color:var(--muted)">/month</span>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:172px 1fr 156px;border-bottom:1px solid var(--rule)">
+        <div style="padding:16px 18px;background:#fff1f2;border-right:1px solid var(--rule);display:flex;flex-direction:column;justify-content:center">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#9f1239;margin-bottom:4px">Pay-per-use</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:15px;font-weight:400;color:#7f1d1d">Doctor Opinion</div>
+        </div>
+        <div style="padding:16px 18px;border-right:1px solid var(--rule)">
+          <div style="font-size:13px;font-weight:300;color:#333;line-height:1.65;margin-bottom:10px">A protocol-aligned expert perspective for cases that go beyond the nurse. Async, on demand, complementary to the user's treating clinic — not a replacement.</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px">
+            <span style="font-size:11px;background:#fff1f2;color:#7f1d1d;border:1px solid #fecdd3;padding:3px 8px;border-radius:5px;font-weight:500">Async consultation</span>
+            <span style="font-size:11px;background:#fff1f2;color:#7f1d1d;border:1px solid #fecdd3;padding:3px 8px;border-radius:5px;font-weight:500">Protocol-aligned review</span>
+            <span style="font-size:11px;background:#fff1f2;color:#7f1d1d;border:1px solid #fecdd3;padding:3px 8px;border-radius:5px;font-weight:500">No appointment needed</span>
+          </div>
+        </div>
+        <div style="padding:16px 18px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px">
+          <span style="font-family:'DM Serif Display',serif;font-size:20px;font-weight:400;color:#9f1239">€40–120</span>
+          <span style="font-size:11px;color:var(--muted)">per session</span>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:172px 1fr 156px">
+        <div style="padding:16px 18px;background:#e0f2fe;border-right:1px solid var(--rule);display:flex;flex-direction:column;justify-content:center">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#0369a1;margin-bottom:4px">B2B</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:15px;font-weight:400;color:#0c4a6e">Clinic Dashboard</div>
+        </div>
+        <div style="padding:16px 18px;border-right:1px solid var(--rule)">
+          <div style="font-size:13px;font-weight:300;color:#333;line-height:1.65;margin-bottom:10px">Clinics recommend the app freely. Those who want patient visibility pay for the dashboard. Optional, never required.</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px">
+            <span style="font-size:11px;background:#e0f2fe;color:#0c4a6e;border:1px solid #bae6fd;padding:3px 8px;border-radius:5px;font-weight:500">Free to recommend</span>
+            <span style="font-size:11px;background:#e0f2fe;color:#0c4a6e;border:1px solid #bae6fd;padding:3px 8px;border-radius:5px;font-weight:500">Patient tracking (opt-in)</span>
+            <span style="font-size:11px;background:#e0f2fe;color:#0c4a6e;border:1px solid #bae6fd;padding:3px 8px;border-radius:5px;font-weight:500">Progress &amp; guidance</span>
+          </div>
+        </div>
+        <div style="padding:16px 18px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px">
+          <span style="font-family:'DM Serif Display',serif;font-size:20px;font-weight:400;color:#0369a1">€50–200</span>
+          <span style="font-size:11px;color:var(--muted)">/month</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 03 CLINIC -->
+  <div class="section" id="biz-clinic">
+    <div class="sec-label"><span class="sec-num">03</span><h2 class="sec-title">The Clinic Relationship</h2><span class="sec-rule"></span></div>
+    <p class="sec-intro">Clinics are a distribution channel, not a customer segment. They benefit from recommending the app and only pay if they want more.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div style="border:1px solid var(--rule);border-radius:10px;padding:20px;background:var(--cream)">
+        <div style="font-size:10.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Free to recommend</div>
+        <div style="font-size:13px;font-weight:300;color:#444;line-height:1.7">Any clinic can refer patients at no cost and no setup. They become a trusted referral source — which benefits their patient relationships — without any operational complexity.</div>
+      </div>
+      <div style="border:1px solid #bae6fd;border-radius:10px;padding:20px;background:#e0f2fe">
+        <div style="font-size:10.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#0369a1;margin-bottom:8px">Paid dashboard (optional)</div>
+        <div style="font-size:13px;font-weight:300;color:#444;line-height:1.7">Clinics wanting patient visibility — habit adherence, progress, the ability to send guidance — pay for the dashboard. The app works fully without it.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding:18px 22px;background:var(--ink);border-radius:10px">
+      <div style="font-size:10.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin-bottom:8px">On the doctor layer and clinic conflict</div>
+      <div style="font-size:13px;font-weight:300;color:#a8a099;line-height:1.75">Doctor consultations are always positioned as a complementary view, never a replacement for the treating clinic. The longer path is to invite clinics into the network as consultation providers — turning a potential tension into ecosystem participation.</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+</body>
+</html>
