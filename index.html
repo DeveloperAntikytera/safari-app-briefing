@@ -196,6 +196,7 @@ body{background:var(--paper);color:var(--ink);font-family:'DM Sans',sans-serif;f
     <button class="nav-page" id="nav-features" onclick="showPage('features')">AI Features</button>
     <button class="nav-page" id="nav-infra" onclick="showPage('infra')">Infrastructure</button>
     <button class="nav-page" id="nav-business" onclick="showPage('business')">Business Model</button>
+    <button class="nav-page" id="nav-access" onclick="showPage('access')">Access</button>
   </div>
   <div class="nav-anchors" id="nav-anchors-comparison">
     <a href="#overview" class="nav-anchor">Overview</a>
@@ -218,6 +219,12 @@ body{background:var(--paper);color:var(--ink);font-family:'DM Sans',sans-serif;f
     <a href="#infra-overview" class="nav-anchor">Workstreams</a>
     <a href="#infra-dev" class="nav-anchor">Preview URL</a>
     <a href="#infra-prod" class="nav-anchor">Production</a>
+  </div>
+  <div class="nav-anchors" id="nav-anchors-access" style="display:none">
+    <a href="#access-stores" class="nav-anchor">App Stores</a>
+    <a href="#access-hosting" class="nav-anchor">Hosting</a>
+    <a href="#access-domain" class="nav-anchor">Domain &amp; SMTP</a>
+    <a href="#access-calendar" class="nav-anchor">Calendar</a>
   </div>
   <div class="nav-anchors" id="nav-anchors-business" style="display:none">
     <a href="#biz-nurses" class="nav-anchor">The Nurse Layer</a>
@@ -1137,6 +1144,175 @@ function setTab(p) {
     <div style="margin-top:12px;padding:18px 22px;background:var(--ink);border-radius:10px">
       <div style="font-size:10.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin-bottom:8px">On the doctor layer and clinic conflict</div>
       <div style="font-size:13px;font-weight:300;color:#a8a099;line-height:1.75">Doctor consultations are always positioned as a complementary view, never a replacement for the treating clinic. The longer path is to invite clinics into the network as consultation providers — turning a potential tension into ecosystem participation.</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+
+<div class="page-section" id="page-access">
+
+<div class="page-header">
+  <div class="ph-eyebrow">Antikytera · developer@antikytera.com</div>
+  <h1 class="ph-title">Infrastructure<br><em>Access Request</em></h1>
+  <p class="ph-lead">To set up and deploy Safari App, the following platform access is required. Please follow the steps for each and grant access to <strong>developer@antikytera.com</strong>. Credentials marked as sensitive should be shared via WhatsApp, Signal, or a password manager link — not plain email.</p>
+</div>
+
+<div class="page-body">
+
+  <!-- APP STORES -->
+  <div class="section" id="access-stores">
+    <div class="sec-label"><span class="sec-num">01</span><h2 class="sec-title">App Stores</h2><span class="sec-rule"></span></div>
+
+    <div class="feature-row" style="border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-bottom:12px">
+      <div class="fr-label" style="background:#f0fdf4;border-right-color:#bbf7d0">
+        <div class="fr-icon">🍎</div>
+        <div class="fr-name" style="color:#14532d">App Store Connect</div>
+        <div class="fr-loc">appstoreconnect.apple.com</div>
+      </div>
+      <div class="fr-body">
+        <p class="fr-desc">Sign in with the Apple ID linked to your developer account. Go to <strong>Users and Access</strong> in the top navigation, click <strong>+</strong> to invite a new user, enter <strong>developer@antikytera.com</strong>, and set the role to <strong>Admin</strong> (or Developer if preferred).</p>
+        <div class="fr-caps">
+          <span class="cap"><span class="cap-dot" style="background:#16a34a"></span>Role: Admin or Developer</span>
+        </div>
+        <p class="fr-detail">This email must be an Apple ID. If it is not yet registered, it can be created for free at <strong>appleid.apple.com</strong> before sending the invite.</p>
+      </div>
+    </div>
+
+    <div class="feature-row" style="border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-bottom:12px">
+      <div class="fr-label" style="background:#eef2ff;border-right-color:#ddd6fe">
+        <div class="fr-icon">▶️</div>
+        <div class="fr-name" style="color:#1e3a8a">Google Play Console</div>
+        <div class="fr-loc">play.google.com/console</div>
+      </div>
+      <div class="fr-body">
+        <p class="fr-desc">Sign in and go to <strong>Users and permissions</strong> in the left sidebar. Click <strong>Invite new users</strong>, enter <strong>developer@antikytera.com</strong>, set the role to <strong>Admin</strong> (or Release Manager), and send the invite.</p>
+        <div class="fr-caps">
+          <span class="cap"><span class="cap-dot" style="background:#2563eb"></span>Role: Admin or Release Manager</span>
+        </div>
+        <p class="fr-detail">The invited email must be linked to a Google account. If it is not, a Google account can be created with this email at <strong>accounts.google.com</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOSTING & DATABASE -->
+  <div class="section" id="access-hosting">
+    <div class="sec-label"><span class="sec-num">02</span><h2 class="sec-title">Hosting &amp; Database</h2><span class="sec-rule"></span></div>
+
+    <div class="feature-row" style="border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-bottom:12px">
+      <div class="fr-label" style="background:#fff7ed;border-right-color:#fed7aa">
+        <div class="fr-icon">🖥</div>
+        <div class="fr-name" style="color:#7c2d12">Hostinger VPS</div>
+        <div class="fr-loc">hpanel.hostinger.com</div>
+      </div>
+      <div class="fr-body">
+        <p class="fr-desc">Two steps: first purchase the VPS if not already done, then grant collaborator access.</p>
+        <div class="fr-caps">
+          <span class="cap"><span class="cap-dot" style="background:#ea580c"></span>Role: Collaborator</span>
+          <span class="cap" style="background:#fff1f2;border-color:#fecdd3;color:#7f1d1d"><span class="cap-dot" style="background:#9f1239"></span>SSH credentials — share securely</span>
+        </div>
+        <p class="fr-detail">
+          <strong>Purchase:</strong> Go to Hostinger → VPS Hosting, choose <strong>KVM 2</strong> (upgradeable later). Select <strong>Ubuntu LTS</strong> as the OS (e.g. Ubuntu 24.04 LTS). Do not select non-LTS versions. Do not reinstall the OS without checking with us first.<br><br>
+          <strong>Collaborator access:</strong> From hpanel.hostinger.com, go to <strong>Account → Collaborators</strong> and invite developer@antikytera.com.<br><br>
+          <strong>SSH access:</strong> Go to the VPS panel → SSH Access, ensure it is enabled, and share the <strong>host, port, username, and password</strong>. Please send via WhatsApp, Signal, or a password manager link — not plain email.
+        </p>
+      </div>
+    </div>
+
+    <div class="feature-row" style="border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-bottom:12px">
+      <div class="fr-label" style="background:#f0fdf4;border-right-color:#bbf7d0">
+        <div class="fr-icon">🗄</div>
+        <div class="fr-name" style="color:#14532d">Supabase</div>
+        <div class="fr-loc">supabase.com/dashboard</div>
+      </div>
+      <div class="fr-body">
+        <p class="fr-desc">Sign in and open the relevant project (or the organisation for access to all projects). Go to <strong>Project Settings → Team</strong> (or <strong>Organisation Settings → Members</strong> for org-level access). Click <strong>Invite</strong>, enter <strong>developer@antikytera.com</strong>, and assign the appropriate role.</p>
+        <div class="fr-caps">
+          <span class="cap"><span class="cap-dot" style="background:#16a34a"></span>Role: Owner or Developer</span>
+        </div>
+        <p class="fr-detail">The recipient will need a Supabase account to accept the invite — free to create at supabase.com.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOMAIN & SMTP -->
+  <div class="section" id="access-domain">
+    <div class="sec-label"><span class="sec-num">03</span><h2 class="sec-title">Domain &amp; SMTP</h2><span class="sec-rule"></span></div>
+
+    <div class="feature-row" style="border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-bottom:12px">
+      <div class="fr-label" style="background:#fdf6e8;border-right-color:#fde68a">
+        <div class="fr-icon">🌐</div>
+        <div class="fr-name" style="color:#7a4800">sarafisfertility.com</div>
+        <div class="fr-loc">Domain registrar — TBC</div>
+      </div>
+      <div class="fr-body">
+        <p class="fr-desc">We need access to the DNS records for <strong>sarafisfertility.com</strong> in order to configure email sending, app linking, and any future subdomains.</p>
+        <div class="fr-caps">
+          <span class="cap"><span class="cap-dot" style="background:#b87000"></span>DNS management access</span>
+          <span class="cap" style="background:#fff1f2;border-color:#fecdd3;color:#7f1d1d"><span class="cap-dot" style="background:#9f1239"></span>SMTP credentials — share securely</span>
+        </div>
+        <p class="fr-detail">
+          <strong>Registrar:</strong> Please let us know where <strong>sarafisfertility.com</strong> was registered (e.g. GoDaddy, Namecheap, Hostinger, Google Domains). Log in and look for a <em>delegate access, collaborator, or invite user</em> option. Invite developer@antikytera.com with permission to manage DNS records.<br><br>
+          <strong>Note:</strong> If the domain is at Hostinger, the Hostinger collaborator access above may cover this already.<br><br>
+          <strong>SMTP:</strong> If email is already set up for this domain (e.g. Google Workspace, Zoho Mail), please share the SMTP credentials for an address such as <strong>noreply@sarafisfertility.com</strong> — host, port, username, and password — via WhatsApp, Signal, or a password manager link. If no email is set up yet, let us know and we will guide you through creating one.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="section" id="access-calendar">
+    <div class="sec-label"><span class="sec-num">04</span><h2 class="sec-title">Booking Calendar</h2><span class="sec-rule"></span></div>
+
+    <div class="feature-row" style="border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-bottom:12px">
+      <div class="fr-label" style="background:#f0f9ff;border-right-color:#bae6fd">
+        <div class="fr-icon">📅</div>
+        <div class="fr-name" style="color:#075985">Calendly</div>
+        <div class="fr-loc">calendly.com</div>
+      </div>
+      <div class="fr-body">
+        <p class="fr-desc">We will embed your Calendly booking page directly inside Safari App. The integration uses a <strong>Personal Access Token</strong> (so the app can fetch your event types and available times) and the <strong>booking page URL</strong> of the consultation event type (which is rendered in a WebView inside the native app).</p>
+        <div class="fr-caps">
+          <span class="cap"><span class="cap-dot" style="background:#0369a1"></span>Personal Access Token</span>
+          <span class="cap"><span class="cap-dot" style="background:#0369a1"></span>Booking page URL</span>
+          <span class="cap"><span class="cap-dot" style="background:#0369a1"></span>Paid Calendly plan required</span>
+        </div>
+        <p class="fr-detail">
+          <strong>Step 1 — Get your booking page URL:</strong> Log in to Calendly. In the left sidebar, go to <strong>Event Types</strong>. Find the event type you use for consultations (e.g. "30-minute consultation"). Click the three dots (···) next to it and select <strong>Copy link</strong>. It will look like: <code style="font-size:11.5px;background:#ede9e1;padding:1px 5px;border-radius:3px">https://calendly.com/your-name/consultation</code> — please share this link with us.<br><br>
+          <strong>Step 2 — Create a Personal Access Token:</strong> Go to <strong>Account → Integrations → API &amp; Webhooks</strong>. Under <strong>Personal Access Tokens</strong>, click <strong>Generate New Token</strong>. Give it a name (e.g. "Safari App") and copy the token immediately — it will only be shown once. Share it via WhatsApp, Signal, or a password manager link.<br><br>
+          <strong>Note:</strong> Webhooks (used to confirm a booking inside the app) require a paid Calendly plan. If you are on the free plan, let us know and we can discuss the options.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY TABLE -->
+  <div class="section" id="access-summary">
+    <div class="sec-label"><span class="sec-num">05</span><h2 class="sec-title">Summary</h2><span class="sec-rule"></span></div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Platform</th>
+          <th>What we need</th>
+          <th>How to share</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>App Store Connect</td><td>User invite — Admin or Developer</td><td>Via platform</td><td style="color:var(--muted);font-style:italic">Pending</td></tr>
+        <tr><td>Google Play Console</td><td>User invite — Admin or Release Manager</td><td>Via platform</td><td style="color:var(--muted);font-style:italic">Pending</td></tr>
+        <tr><td>Hostinger</td><td>Collaborator access + SSH credentials</td><td>Platform + secure channel</td><td style="color:var(--muted);font-style:italic">Pending</td></tr>
+        <tr><td>Supabase</td><td>Team invite — Owner or Developer</td><td>Via platform</td><td style="color:var(--muted);font-style:italic">Pending</td></tr>
+        <tr><td>Domain Registrar</td><td>DNS access — registrar TBC</td><td>Via platform</td><td style="color:#b87000;font-style:italic">Action needed</td></tr>
+        <tr><td>SMTP</td><td>Host, port, username, password</td><td>Secure channel only</td><td style="color:#b87000;font-style:italic">Action needed</td></tr>
+        <tr><td>Calendly</td><td>Booking page URL + Personal Access Token</td><td>URL via message · Token via secure channel</td><td style="color:#b87000;font-style:italic">Action needed</td></tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:14px;padding:16px 20px;background:var(--ink);border-radius:10px">
+      <div style="font-size:10.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin-bottom:7px">On sharing sensitive credentials</div>
+      <div style="font-size:13px;font-weight:300;color:#a8a099;line-height:1.7">SSH credentials and SMTP passwords should never be sent over plain email. Please use WhatsApp, Signal, or a password manager sharing link (e.g. 1Password, Bitwarden). If unsure, ask us and we will set up a secure method.</div>
     </div>
   </div>
 
